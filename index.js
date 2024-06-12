@@ -30,16 +30,19 @@ let users = loadData(usersPath);
 let meals = loadData(mealsPath);
 let mealPlans = loadData(mealPlansPath);
 
-// Middleware for logging requests
-app.use((req, res, next) => {
+// Middleware for logging my requests
+// logs the HTTP method and the URL of the request
+app.use((req, res, next) => { 
     console.log(`${req.method} ${req.url}`);
     next();
 });
 
-// Middleware for error handling
+// Middleware for my error handling
+// Remember 4 inputs needed 
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Oh no! my bread dint not rise, and neither did my website. Try again later');
+    res.status(500).send('Oh no! my bread didnt not rise, and neither did my website. Try again later');
 });
 
 // API endpoints for my USERS 
