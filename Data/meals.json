@@ -10,18 +10,21 @@
         "id": 2,
         "name": "Oatmeal",
         "ingredients": ["Rolled Oats", "Chia Seeds", "Soy Milk", "Peanut Butter"],
-        "calories": 600
+        "calories": 500, 
+        "protein": 20
     },
     {
         "id": 3,
         "name": "Lunch Burrito",
         "ingredients": ["Tortilla", "Chorizo", "Cheese", "Bell Peppers"],
-        "calories": 600
+        "calories": 600,
+        "protein": 35
     },
     {
         "id": 4,
         "name": "Lunch Salad",
         "ingredients": ["Chicken", "Leafy Greens", "Prmesan", "Bell Green Goddess"],
-        "calories": 600
+        "calories": 300,
+        "protein": 35
     },
 ]
