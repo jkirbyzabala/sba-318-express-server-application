@@ -1,12 +1,17 @@
 [
-    {
-        "id": 1,
-        "name": "Kirby",
-        "email": "kzabala@yahoo.com"
-    },
-    {
-        "id": 2,
-        "name": "Aubrey",
-        "email": "agraham@ovo.com"
-    }
+  {
+    "id": 1,
+    "name": "Kirby",
+    "email": "kzabala@yahoo.com"
+  },
+  {
+    "id": 2,
+    "name": "Aubrey",
+    "email": "agraham@ovo.com"
+  },
+  {
+    "name": "Mister Morale",
+    "email": "k.dot@aol.com",
+    "id": 3
+  }
 ]
