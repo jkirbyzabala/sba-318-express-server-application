@@ -6,7 +6,7 @@ const path = require('path'); // Import path module, lets me transform file path
 const app = express(); // Initialize Express
 const port = 3000; // Set the Port to 3000
 
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // this helps the server understand data coming to it
 
 // Serve static files from 'Pages' and 'CSS' directories
 app.use(express.static(path.join(__dirname, 'Pages')));
@@ -22,8 +22,10 @@ const usersPath = path.join(__dirname, 'data', 'users.json');
 const mealsPath = path.join(__dirname, 'data', 'meals.json');
 const mealPlansPath = path.join(__dirname, 'data', 'meal-plans.json');
 
+// define a function load data. This will read my JSON data and parse the data 
 const loadData = (filePath) => JSON.parse(fs.readFileSync(filePath));
 
+// I am assigning variables for users, meals and mealplans and using loadData to get the data from my JSON files 
 let users = loadData(usersPath);
 let meals = loadData(mealsPath);
 let mealPlans = loadData(mealPlansPath);
@@ -37,7 +39,7 @@ app.use((req, res, next) => {
 // Middleware for error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Something broke!');
+    res.status(500).send('Oh no! my bread dint not rise, and neither did my website. Try again later');
 });
 
 // API endpoints for my USERS 
