@@ -32,6 +32,11 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
+// Root route
+app.get('/', (req, res) => {
+    res.send('Welcome to the Meal Planning App! Go to <a href="/view-users">View Users</a> to see all users.');
+});
+
 // GET routes for data
 app.get('/users', (req, res) => {
     res.json(users);
