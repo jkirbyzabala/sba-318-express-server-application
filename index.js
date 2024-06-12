@@ -1,10 +1,10 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
+const express = require('express'); //import the express framework
+const bodyParser = require('body-parser'); //converts JSON in Data folder into JS 
+const fs = require('fs');  //use this to work with your file system
+const path = require('path'); //import path module, lets me transform file paths consistently
 
-const app = express();
-const port = 3000;
+const app = express(); //Initialize Express
+const port = 3000; // Set the Port to 3000
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
