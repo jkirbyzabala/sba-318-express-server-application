@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "name": "Breakfast Bowl",
+        "ingredients": ["Eggs", "Hashbrowns", "Turkey Bacon", "Coffee"],
+        "calories": 450,
+        "protein": 25
+    },
+    {
+        "id": 2,
+        "name": "Oatmeal",
+        "ingredients": ["Rolled Oats", "Chia Seeds", "Soy Milk", "Peanut Butter"],
+        "calories": 600
+    },
+    {
+        "id": 3,
+        "name": "Lunch Burrito",
+        "ingredients": ["Tortilla", "Chorizo", "Cheese", "Bell Peppers"],
+        "calories": 600
+    },
+    {
+        "id": 4,
+        "name": "Lunch Salad",
+        "ingredients": ["Chicken", "Leafy Greens", "Prmesan", "Bell Green Goddess"],
+        "calories": 600
+    },
+]
