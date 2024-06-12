@@ -1,15 +1,23 @@
-const express = require('express'); //import the express framework
-const bodyParser = require('body-parser'); //converts JSON in Data folder into JS 
-const fs = require('fs');  //use this to work with your file system
-const path = require('path'); //import path module, lets me transform file paths consistently
+const express = require('express'); // Import the express framework
+const bodyParser = require('body-parser'); // Middleware to parse JSON bodies
+const fs = require('fs'); // Use this to work with your file system
+const path = require('path'); // Import path module, lets me transform file paths consistently
 
-const app = express(); //Initialize Express
+const app = express(); // Initialize Express
 const port = 3000; // Set the Port to 3000
 
 app.use(bodyParser.json());
-app.use(express.static('public'));
 
-// Load data
+// Serve static files from 'Pages' and 'CSS' directories
+app.use(express.static(path.join(__dirname, 'Pages')));
+app.use('/css', express.static(path.join(__dirname, 'CSS')));
+
+// Route to serve the homepage
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Pages', 'index.html'));
+});
+
+// Load data from JSON files
 const usersPath = path.join(__dirname, 'data', 'users.json');
 const mealsPath = path.join(__dirname, 'data', 'meals.json');
 const mealPlansPath = path.join(__dirname, 'data', 'meal-plans.json');
@@ -20,37 +28,24 @@ let users = loadData(usersPath);
 let meals = loadData(mealsPath);
 let mealPlans = loadData(mealPlansPath);
 
-// Custom middleware for logging requests
+// Middleware for logging requests
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next();
 });
 
-// Error-handling middleware
+// Middleware for error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });
 
-// Root route
-app.get('/', (req, res) => {
-    res.send('Welcome to the Meal Planning App! Go to <a href="/view-users">View Users</a> to see all users.');
-});
-
-// GET routes for data
+// API endpoints for my USERS 
+// format for consistency: GET, POST, PUT, PATCH, DELETE
 app.get('/users', (req, res) => {
     res.json(users);
 });
 
-app.get('/meals', (req, res) => {
-    res.json(meals);
-});
-
-app.get('/meal-plans', (req, res) => {
-    res.json(mealPlans);
-});
-
-// POST routes for data
 app.post('/users', (req, res) => {
     const newUser = req.body;
     newUser.id = users.length + 1;
@@ -59,15 +54,19 @@ app.post('/users', (req, res) => {
     res.status(201).json(newUser);
 });
 
-app.post('/meals', (req, res) => {
-    const newMeal = req.body;
-    newMeal.id = meals.length + 1;
-    meals.push(newMeal);
-    fs.writeFileSync(mealsPath, JSON.stringify(meals, null, 2));
-    res.status(201).json(newMeal);
+app.put('/users/:id', (req, res) => {
+    const userId = parseInt(req.params.id);
+    const updatedData = req.body;
+    const user = users.find(u => u.id === userId);
+    if (user) {
+        Object.assign(user, updatedData);
+        fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
+        res.json(user);
+    } else {
+        res.status(404).send('User not found');
+    }
 });
 
-// PATCH route for data
 app.patch('/users/:id', (req, res) => {
     const userId = parseInt(req.params.id);
     const updatedData = req.body;
@@ -81,7 +80,6 @@ app.patch('/users/:id', (req, res) => {
     }
 });
 
-// DELETE route for data
 app.delete('/users/:id', (req, res) => {
     const userId = parseInt(req.params.id);
     const userIndex = users.findIndex(u => u.id === userId);
@@ -94,7 +92,111 @@ app.delete('/users/:id', (req, res) => {
     }
 });
 
-// Query parameters for filtering data
+// API endpoints for MEALS 
+// format for consistency: GET, POST, PUT, PATCH, DELETE
+app.get('/meals', (req, res) => {
+    res.json(meals);
+});
+
+app.post('/meals', (req, res) => {
+    const newMeal = req.body;
+    newMeal.id = meals.length + 1;
+    meals.push(newMeal);
+    fs.writeFileSync(mealsPath, JSON.stringify(meals, null, 2));
+    res.status(201).json(newMeal);
+});
+
+app.put('/meals/:id', (req, res) => {
+    const mealId = parseInt(req.params.id);
+    const updatedData = req.body;
+    const meal = meals.find(m => m.id === mealId);
+    if (meal) {
+        Object.assign(meal, updatedData);
+        fs.writeFileSync(mealsPath, JSON.stringify(meals, null, 2));
+        res.json(meal);
+    } else {
+        res.status(404).send('Meal not found');
+    }
+});
+
+app.patch('/meals/:id', (req, res) => {
+    const mealId = parseInt(req.params.id);
+    const updatedData = req.body;
+    const meal = meals.find(m => m.id === mealId);
+    if (meal) {
+        Object.assign(meal, updatedData);
+        fs.writeFileSync(mealsPath, JSON.stringify(meals, null, 2));
+        res.json(meal);
+    } else {
+        res.status(404).send('Meal not found');
+    }
+});
+
+app.delete('/meals/:id', (req, res) => {
+    const mealId = parseInt(req.params.id);
+    const mealIndex = meals.findIndex(m => m.id === mealId);
+    if(mealIndex !== -1) {
+        meals.splice(mealIndex, 1);
+        fs.writeFileSync(mealsPath, JSON.stringify(meals, null, 2));
+        res.status(204).send();
+    } else {
+        res.status(404).send('Meal not found');
+    }
+});
+
+// API endpoints for MEAL PLANS 
+// format for consistency: GET, POST, PUT, PATCH, DELETE
+app.get('/meal-plans', (req, res) => {
+    res.json(mealPlans);
+});
+
+app.post('/meal-plans', (req, res) => {
+    const newMealPlan = req.body;
+    newMealPlan.id = mealPlans.length + 1;
+    mealPlans.push(newMealPlan);
+    fs.writeFileSync(mealPlansPath, JSON.stringify(mealPlans, null, 2));
+    res.status(201).json(newMealPlan);
+});
+
+app.put('/meal-plans/:id', (req, res) => {
+    const mealPlanId = parseInt(req.params.id);
+    const updatedData = req.body;
+    const mealPlan = mealPlans.find(mp => mp.id === mealPlanId);
+    if (mealPlan) {
+        Object.assign(mealPlan, updatedData);
+        fs.writeFileSync(mealPlansPath, JSON.stringify(mealPlans, null, 2));
+        res.json(mealPlan);
+    } else {
+        res.status(404).send('Meal plan not found');
+    }
+});
+
+app.patch('/meal-plans/:id', (req, res) => {
+    const mealPlanId = parseInt(req.params.id);
+    const updatedData = req.body;
+    const mealPlan = mealPlans.find(mp => mp.id === mealPlanId);
+    if (mealPlan) {
+        Object.assign(mealPlan, updatedData);
+        fs.writeFileSync(mealPlansPath, JSON.stringify(mealPlans, null, 2));
+        res.json(mealPlan);
+    } else {
+        res.status(404).send('Meal plan not found');
+    }
+});
+
+app.delete('/meal-plans/:id', (req, res) => {
+    const mealPlanId = parseInt(req.params.id);
+    const mealPlanIndex = mealPlans.findIndex(mp => mp.id === mealPlanId);
+    if (mealPlanIndex !== -1) {
+        mealPlans.splice(mealPlanIndex, 1);
+        fs.writeFileSync(mealPlansPath, JSON.stringify(mealPlans, null, 2));
+        res.status(204).send();
+    } else {
+        res.status(404).send('Meal plan not found');
+    }
+});
+
+// Query parameters for filtering meals
 app.get('/meals/filter', (req, res) => {
     const { calorieLimit } = req.query;
     if (calorieLimit) {
@@ -105,7 +207,7 @@ app.get('/meals/filter', (req, res) => {
     }
 });
 
-// Route parameters for specific resources
+// Route parameters for specific user
 app.get('/users/:id', (req, res) => {
     const userId = parseInt(req.params.id);
     const user = users.find(u => u.id === userId);
@@ -119,13 +221,28 @@ app.get('/users/:id', (req, res) => {
 // View template rendering
 app.set('view engine', 'ejs');
 
+// View all users
 app.get('/view-users', (req, res) => {
     res.render('users', { users });
 });
 
+// Add a new user
 app.get('/add-user', (req, res) => {
     res.render('add-user');
 });
+
+// View all meals
+app.get('/view-meals', (req, res) => {
+    res.render('meals', { meals });
+});
+
+// Render the add-user.ejs view
+app.get('/add-user', (req, res) => {
+    res.render('add-user');
+});
+
+
+
 
 app.post('/add-user', (req, res) => {
     const newUser = req.body;
@@ -135,6 +252,7 @@ app.post('/add-user', (req, res) => {
     res.redirect('/view-users');
 });
 
+// Listen on specified port
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });

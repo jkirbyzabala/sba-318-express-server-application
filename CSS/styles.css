@@ -1,0 +1,12 @@
+body {
+    background-color: #ffd6d6; /* Light pink background color */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    font-family: Arial, sans-serif; /* Set a fallback font */
+}
+
+.container {
+    max-width: 800px; /* Set maximum width for content */
+    margin: 0 auto; /* Center content horizontally */
+    padding: 20px; /* Add some padding around content */
+}
