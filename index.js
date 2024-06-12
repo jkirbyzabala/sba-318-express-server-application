@@ -12,10 +12,6 @@ app.use(bodyParser.json()); // this helps the server understand data coming to i
 app.use(express.static(path.join(__dirname, 'Pages')));
 app.use('/css', express.static(path.join(__dirname, 'CSS')));
 
-// Route to serve the homepage
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Pages', 'index.html'));
-});
 
 // Load data from JSON files
 const usersPath = path.join(__dirname, 'data', 'users.json');
@@ -43,6 +39,11 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Oh no! my bread didnt not rise, and neither did my website. Try again later');
+});
+
+// Route for my homepage
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Pages', 'index.html'));
 });
 
 // API endpoints for my USERS 
@@ -223,7 +224,7 @@ app.get('/users/:id', (req, res) => {
     }
 });
 
-// View template rendering
+// setting the view engine using embedded javascript (ejs)
 app.set('view engine', 'ejs');
 
 // View all users
@@ -247,8 +248,6 @@ app.get('/add-user', (req, res) => {
 });
 
 
-
-
 app.post('/add-user', (req, res) => {
     const newUser = req.body;
     newUser.id = users.length + 1;
@@ -257,7 +256,7 @@ app.post('/add-user', (req, res) => {
     res.redirect('/view-users');
 });
 
-// Listen on specified port
+// Listen for HTTTP requests on port 3000
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
